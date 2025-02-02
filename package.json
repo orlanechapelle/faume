@@ -1,0 +1,10 @@
+{
+  "name": "faume-orlane",
+  "dependencies": {
+    "cypress": "^14.0.1"
+  },
+  "scripts": {
+    "ui": "npx cypress open",
+    "terminal": "npx cypress run"
+  }
+}

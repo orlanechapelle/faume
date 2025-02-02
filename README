@@ -1,0 +1,4 @@
+1. Ouvrir le terminal 
+2. Installer nodejs version v20.5.0 
+3. npm install
+4. npm run ui pour lancer l'outil cypress ou npm run terminal pour le exécuter les tests depuis le temrinal 
