@@ -1,4 +1,13 @@
+Installer cypress 
 1. Ouvrir le terminal 
 2. Installer nodejs version v20.5.0 
 3. npm install
-4. npm run ui pour lancer l'outil cypress ou npm run terminal pour le exécuter les tests depuis le temrinal 
+
+Exécuter les tests 
+- npm run terminal pour le exécuter les tests depuis le temrinal 
+OU 
+- npm run ui pour lancer l'outil cypress
+- puis sélectionner E2ETesting
+- sélectionner le navigateur (j'utilise de préférence Electron)
+- cliquer sur start E2E testing
+- cliquer sur le script searchBar

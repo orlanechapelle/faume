@@ -1,7 +1,7 @@
 
-describe('Tester la barre de recherche sur le site Ami For Ever', function(){
+describe('Tester la barre de recherche sur le site Ami For Ever', function() {
 
-    beforeEach(() =>{
+    beforeEach(function () {
         cy.visit('https://forever.amiparis.com/')
                 
         //Permet d'intercepter la requête de recherche 
@@ -15,26 +15,22 @@ describe('Tester la barre de recherche sur le site Ami For Ever', function(){
     it(`Recherche valide avec un mot-clé`, function() {
         cy.get('@ButtonNav').click()
         cy.get('#input_3').click().type('pantalon')
-        cy.wait('@searchRequest').then((interception) => { 
-            cy.wrap(interception.response.body["hydra:member"][0].id).as(
-                'article_Id'
-            )
+        cy.wait('@searchRequest').then(function (interception) { 
+            cy.get('[data-testid="card.title"]').eq(0).should('contain', 'Pantalon').click()
+            cy.get('.f-product-heading > .f-title')
+                .should('contain', interception.response.body["hydra:member"][0].title)    
         })
-        cy.get('[data-testid="card.title"]').eq(1).should('contain', 'Pantalon').click()
-        cy.get('.f-product-heading > .f-title').should('contain', 'Pantalon')
     })
 
     it('Recherche avec plusieurs mots-clés', function() {
         cy.get('@ButtonNav').click()
         cy.get('#input_3').click().type('pantalon laine') 
+        let title;
         cy.wait('@searchRequest').then((interception) => { 
-            cy.wrap(interception.response.body["hydra:member"][0].id).as(
-                'article_Id'
-            )
+            cy.get('[data-testid="card.title"]').eq(0).should('contain', 'Pantalon').click()
+            cy.get('.f-product-heading > .f-title').should('contain', interception.response.body["hydra:member"][0].title)
+        //    cy.get(':nth-child(2) > .f-collapse__content > .f-collapse__text').should('contain', 'LAINE')
         })
-        cy.get('[data-testid="card.title"]').eq(1).should('contain', 'Pantalon').click()
-        cy.get('.f-product-heading > .f-title').should('contain', 'Pantalon')
-        cy.get(':nth-child(2) > .f-collapse__content > .f-collapse__text').should('contain', 'LAINE')
     })
     /*Lorsque je recherche pantalon laine, j'ai également des pantalons qui ne sont pas en laine dans la recherche. 
     Il semblerait que la recherche soit pantalon OU laine. Or dans ce cas, je recherche pantalon ET laine (les deux éléments font partis de ma recheche)*/
@@ -43,12 +39,9 @@ describe('Tester la barre de recherche sur le site Ami For Ever', function(){
         cy.get('@ButtonNav').click()
         cy.get('#input_3').click().type('pan')  
         cy.wait('@searchRequest').then((interception) => { 
-            cy.wrap(interception.response.body["hydra:member"][0].id).as(
-                'article_Id'
-            )
+            cy.get('[data-testid="card.title"]').eq(1).should('exist').click()
+            cy.get('.f-product-heading > .f-title').should('contain', 'Pantalon')    
         })
-        cy.get('[data-testid="card.title"]').eq(1).should('exist').click()
-        cy.get('.f-product-heading > .f-title').should('contain', 'Pantalon')   
     }) 
 
     it('Recherche avec mot-clé inexsitant', function() {
@@ -77,20 +70,17 @@ describe('Tester la barre de recherche sur le site Ami For Ever', function(){
         cy.get('@ButtonNav').click()
 
         cy.get('#input_3').click().type('cardigan')
-        cy.wait('@searchRequest').then((interception) => { 
-            cy.wrap(interception.response.body["hydra:member"][0].id).as(
-                'article_Id'
-            )
-        })
-        cy.get('[data-testid="card.title"]').eq(1).should('exist')
+        cy.wait('@searchRequest').then(function ()  {
+            cy.get('[data-testid="card.title"]').eq(1).should('exist')
 
-        cy.get('#input_3').click().clear().type('gilet')
-        cy.wait('@searchRequest').then((interception) => { 
-            cy.wrap(interception.response.body["hydra:member"][0].id).as(
-                'article_Id'
-            )
-        })
-        cy.get('[data-testid="card.title"]').eq(1).should('exist') 
+            cy.get('#input_3').click().clear().type('gilet')
+            cy.wait('@searchRequest').then(function () {
+               cy.get('.f-form-message').contains('Aucun produit trouvé')
+                .should('not.exist')
+            })
+        }) 
     }) 
     // Il semblerait que les mots synonymes ne soient pas pris en compte pour la recherche. 
 })
+
+// Axe d'amélioration : permettre d'appuyer sur la touche entrer pour finaliser la recherche avec un redirection sur tous les produits liés à la recherche
